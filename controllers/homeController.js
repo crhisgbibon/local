@@ -1,8 +1,8 @@
-const db = require('better-sqlite3')('db/local.db');
+const model = require('../models/homeModel');
 
 exports.index = function (req, res, next)
 {
-  const rows = db.prepare(`SELECT * FROM 'references'`).all();
+  const rows = model.GetAllReferences();
   res.render('home/index', {
     header: 'Local',
     title: 'Local',
