@@ -13,5 +13,3 @@ db.serialize(() => {
     );
   `);
 });
-
-db.close();

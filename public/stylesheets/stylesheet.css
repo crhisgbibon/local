@@ -1,10 +1,11 @@
 :root{
-  --themeColor: lightgreen;
+  --themeColor: rgb(204, 255, 204);
 }
 
 body{
   display: block;
   font-size: 16px;
+  padding-top: 50px;
 }
 
 button{
@@ -32,20 +33,24 @@ input{
 }
 
 button:hover{
-  transform: scale(105%, 105%);
+  transform: scale(102%, 102%);
 }
 
 button:active{
-  transform: scale(95%, 95%);
+  transform: scale(98%, 98%);
 }
 
 .menu{
+  position: fixed;
+  background-color: white;
+  z-index: 10;
+  top: 0;
   width: 100%;
   height: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
 }
 
 .menu button{
@@ -59,12 +64,12 @@ button:active{
 }
 
 .item{
-  float: left;
-  width: 250px;
-  height: 250px;
-  margin: 4px;
-  padding: 4px;
+  height: 300px;
+  width: 400px;
+  margin: 2px;
+  padding: 2px;
   display: flex;
+  float: left;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -72,8 +77,15 @@ button:active{
   border-radius: 6px;
 }
 
+.holder{
+  max-height: 75%;
+  max-width: 100%;
+}
+
 .image{
-  overflow: hidden;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 .video{
@@ -84,13 +96,31 @@ button:active{
 
 .control{
   width: 100%;
-  max-width: 500px;
-  margin: 2px;
-  padding: 2px;
+  max-width: 100%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.controlT, .controlB{
+  width: 100%;
+  max-width: 100%;
+  height: 50%;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+}
+
+.tag{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
 }
 
 .name{
@@ -98,7 +128,21 @@ button:active{
   overflow: hidden;
   white-space: nowrap;
   width: 75%;
+  height: 100%;
   cursor: pointer;
+  background: var(--themeColor);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name:hover{
+  transform: scale(102%, 102%);
+}
+
+.name:active{
+  transform: scale(98%, 98%);
 }
 
 .buttonDiv{
@@ -109,8 +153,7 @@ button:active{
   justify-content: center;
 }
 
-#PLAYLIST{
-  z-index: 20;
+#PLAYLIST, #TAGLIST, #EDIT_SCREEN{
   position: fixed;
   top: 100px;
   left: 25%;
@@ -123,34 +166,44 @@ button:active{
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  padding: 4px;
+  padding: 2px;
   border-radius: 6px;
 }
 
 #EDIT_SCREEN{
   z-index: 10;
-  position: fixed;
-  top: 100px;
-  left: 25%;
-  width: 50%;
-  min-width: 100px;
-  min-height: 300px;
-  background-color: white;
-  border: 1px solid var(--themeColor);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  padding: 4px;
-  border-radius: 6px;
 }
 
-#EDIT_SCREEN input{
+#TAGLIST{
+  z-index: 20;
+}
+
+#PLAYLIST{
+  z-index: 30;
+}
+
+#EDIT_SCREEN label{
+  padding: 2px;
+  margin: 2px;
+}
+
+#EDIT_SCREEN input[type='text']{
   width: 90%;
   height: 50px;
   text-align: center;
   padding: 2px;
   margin: 2px;
+}
+
+#EDIT_SCREEN input[type='submit']{
+  width: 50%;
+  max-width: 300px;
+  height: 50px;
+  text-align: center;
+  padding: 2px;
+  margin: 2px;
+  border-radius: 6px;
+  background-color: var(--themeColor);
 }
 
 #EDIT_SCREEN button{

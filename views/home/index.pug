@@ -3,26 +3,32 @@ extends ../layout
 block content
 
   div(class='menu')
-    button(class='' id='MENU_LIST')  List
     button(class='' id='MENU_HIDE')  Hide
+    button(class='' id='MENU_LIST')  List
+    button(class='' id='MENU_INFO')  Info
     button(class='' id='MENU_MANY')  Many
-    input(class='' type='search' placeholder='Search Tags...')
+    button(class='' id='MENU_TAGS')  Tags
+    input(class='' type='search' placeholder='Get Tags...')
+    button(class='' id='MENU_GET')  Get
     button(class='' id='MENU_CLEAR')  Clear
     button(class='' id='MENU_THEME')  Light
 
-  div(class='edit' id='EDIT_SCREEN')
-    label(for='EDIT_ID') Id:
-    input(class='' id='EDIT_ID' type='text' value='' disabled)
-    label(for='EDIT_FILE') Filename:
-    input(class='' id='EDIT_FILE' type='text' value='' disabled)
-    label(for='EDIT_NAME') Displayname:
-    input(class='' id='EDIT_NAME' type='text' value='')
+  form(class='edit' id='EDIT_SCREEN' action='/edit' method='POST')
+    label(for='EDIT_SCREEN') Edit
+    label(for='EDIT_ID') ID:
+    input(class='' id='EDIT_ID' name="EDIT_ID" type='text' value='' readonly)
+    label(for='EDIT_FILE') File:
+    input(class='' id='EDIT_FILE' type='text' value='' readonly)
+    label(for='EDIT_NAME') Name:
+    input(class='' id='EDIT_NAME' name="EDIT_NAME" type='text' value='')
     label(for='EDIT_TAGS') Tags:
-    input(class='' id='EDIT_TAGS' type='text' value='')
-    button(class='' id='EDIT_SUBMIT')  Submit
-    button(class='' id='EDIT_CLOSE')  Close
+    input(class='' id='EDIT_TAGS' name="EDIT_TAGS" type='text' value='')
+    input(class='' id='EDIT_SUBMIT' type='submit')
+    button(class='' id='EDIT_CLOSE' type='button') Close
 
   div(class='' id='PLAYLIST')
+
+  div(class='' id='TAGLIST')
 
   - if(references)
 
@@ -30,19 +36,27 @@ block content
       div(class='')
         - if(ref.fileType === 'image')
             div(class='item')
-              img(class='image' src='/images/' + ref.fileLocation)
+              div(class='holder')
+                img(class='image' src='/images/' + ref.fileLocation)
               div(class='control')
-                p(class='name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
-                div(class='buttonDiv')
-                  button(class='button') +
+                div(class='controlT')
+                  p(class='name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
+                  div(class='buttonDiv')
+                    button(class='button') +
+                div(class='controlB')
+                  p(class='tag') #{ref.tags}
         - if(ref.fileType === 'video')
             div(class='item')
-              video(class='video' controls)
-                source(src='/videos/' + ref.fileLocation type="video/mp4")
+              div(class='holder')
+                video(class='video' controls)
+                  source(src='/videos/' + ref.fileLocation type="video/mp4")
               div(class='control')
-                p(class='name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
-                div(class='buttonDiv')
-                  button(class='button') +
+                div(class='controlT')
+                  p(class='name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
+                  div(class='buttonDiv')
+                    button(class='button') +
+                div(class='controlB')
+                  p(class='tag') #{ref.tags}
           
 
   - else

@@ -3,4 +3,6 @@ node_modules
 public/images/*
 public/videos/*
 public/documents/*
-db/local.db
+db/*.db
+db/*.db-shm
+db/*.db-wal
