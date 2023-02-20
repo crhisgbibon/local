@@ -7,8 +7,7 @@ npm run server
 ```
 
 # load db
-Create local.db in controllers folder
-Create tables if missing:
+Create db/tables if missing:
 ```
 node controllers/migrate.js
 ```

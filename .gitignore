@@ -3,4 +3,4 @@ node_modules
 public/images/*
 public/videos/*
 public/documents/*
-db/local.db
+local.db
