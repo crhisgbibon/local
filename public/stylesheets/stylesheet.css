@@ -1,0 +1,160 @@
+body{
+  display: block;
+  font-size: 16px;
+}
+
+button{
+  width: 100%;
+  height: 100%;
+  max-width: 50px;
+  max-height: 50px;
+  background-color: lightsalmon;
+  border: 1px solid lightsalmon;
+  border-radius: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+input{
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 50px;
+  border-radius: 6px;
+  padding: 2px;
+  border: 1px solid lightsalmon;
+}
+
+button:hover{
+  transform: scale(105%, 105%);
+}
+
+button:active{
+  transform: scale(95%, 95%);
+}
+
+.menu{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.menu button{
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.menu input{
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.item{
+  float: left;
+  width: 250px;
+  height: 250px;
+  margin: 4px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(225, 225, 225);
+  border-radius: 6px;
+}
+
+.image{
+  overflow: hidden;
+}
+
+.video{
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.control{
+  width: 100%;
+  max-width: 500px;
+  margin: 2px;
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.name{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 75%;
+  cursor: pointer;
+}
+
+.buttonDiv{
+  width: 25%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#PLAYLIST{
+  z-index: 20;
+  position: fixed;
+  top: 100px;
+  left: 25%;
+  width: 50%;
+  min-width: 100px;
+  min-height: 300px;
+  background-color: white;
+  border: 1px solid lightsalmon;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+#EDIT_SCREEN{
+  z-index: 10;
+  position: fixed;
+  top: 100px;
+  left: 25%;
+  width: 50%;
+  min-width: 100px;
+  min-height: 300px;
+  background-color: white;
+  border: 1px solid lightsalmon;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+#EDIT_SCREEN input{
+  width: 90%;
+  height: 50px;
+  text-align: center;
+  padding: 2px;
+  margin: 2px;
+}
+
+#EDIT_SCREEN button{
+  width: 50%;
+  max-width: 300px;
+  height: 50px;
+  text-align: center;
+  padding: 2px;
+  margin: 2px;
+  border-radius: 6px;
+}

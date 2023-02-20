@@ -1,10 +1,11 @@
-const Home = require('../models/homeModel');
+const db = require('better-sqlite3')('local.db');
 
-// Display list of all Artists.
 exports.index = function (req, res, next)
 {
-  res.render('index', {
+  const rows = db.prepare(`SELECT * FROM 'references'`).all();
+  res.render('home/index', {
     header: 'Local',
     title: 'Local',
+    references: rows,
   });
 };

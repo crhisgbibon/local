@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const path = require('path');
 const PASSWORD = process.env.PASSWORD;
 const homeRouter = require('./routes/home');
 const app = express();

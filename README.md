@@ -1,20 +1,18 @@
 # local
 
-test change
-
 # startup
-Run server
+Run local server on port 3000:
 ```
 npm run server
 ```
 
 # load db
-Create local.db in db folder
+Create local.db in controllers folder
 Create tables if missing:
 ```
-node db/migrate.js
+node controllers/migrate.js
 ```
 Scans public folders (documents, images, videos) and loads into db
 ```
-node db/populate.js
+node controllers/populate.js
 ```
