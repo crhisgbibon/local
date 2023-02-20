@@ -1,6 +1,6 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('local.db');
+const db = new sqlite3.Database('db/local.db');
 const glob = require('glob');
 
 glob('public/images/*', function(err, files) {

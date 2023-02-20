@@ -1,4 +1,4 @@
-const db = require('better-sqlite3')('local.db');
+const db = require('better-sqlite3')('db/local.db');
 
 exports.index = function (req, res, next)
 {
