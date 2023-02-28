@@ -1,13 +1,18 @@
 'use strict';
 
+const MENU = document.getElementById('MENU');
+const MENU_HIDE = document.getElementById('MENU_HIDE');
+const MENU2 = document.getElementById('MENU2');
+const MENU_HIDE2 = document.getElementById('MENU_HIDE2');
+const MENU_PLAY = document.getElementById('MENU_PLAY');
 const MENU_LIST = document.getElementById('MENU_LIST');
 const MENU_INFO = document.getElementById('MENU_INFO');
 const MENU_MANY = document.getElementById('MENU_MANY');
 const MENU_TAGS = document.getElementById('MENU_TAGS');
 
-const PLAYLIST = document.getElementById('PLAYLIST');
+const PLAY_LIST = document.getElementById('PLAY_LIST');
 
-const TAGLIST = document.getElementById('TAGLIST');
+const TAG_LIST = document.getElementById('TAG_LIST');
 
 const EDIT_SCREEN = document.getElementById('EDIT_SCREEN');
 const EDIT_ID = document.getElementById('EDIT_ID');
@@ -28,21 +33,40 @@ const HOLDERS_LENGTH = HOLDERS.length;
 const NAMES = document.getElementsByClassName('name');
 const NAMES_LENGTH = NAMES.length;
 
-MENU_LIST.onclick = function() { TogglePanel(PLAYLIST); };
-MENU_INFO.onclick = function() { ToggleHide(); };
+const BUTTONS = document.getElementsByClassName('button');
+const BUTTONS_LENGTH = BUTTONS.length;
+
+const SCREENS = [PLAY_LIST, TAG_LIST];
+
+MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
+MENU_HIDE2.onclick = function() { TogglePanel(MENU); ToggleHide(); };
+MENU_PLAY.onclick = function() { PlayPause(); };
+MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
+MENU_INFO.onclick = function() { ToggleInfo(); };
 MENU_MANY.onclick = function() { SwitchMany(); };
-MENU_TAGS.onclick = function() { TogglePanel(TAGLIST); };
+MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, 1); };
 
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
 
 let many = 0;
+let index = 0;
+let play = false;
+
+MENU.style.width = '100%';
 
 TogglePanel(EDIT_SCREEN);
-TogglePanel(PLAYLIST);
-TogglePanel(TAGLIST);
-AssignNames(NAMES);
+TogglePanel(PLAY_LIST);
+TogglePanel(TAG_LIST);
 
-function ToggleHide()
+AssignNames(NAMES);
+AssignButtons(BUTTONS);
+
+let playlist = [];
+let current = undefined;
+let interval = undefined;
+let timer = 5;
+
+function ToggleInfo()
 {
   if(CONTROLS_LENGTH !== HOLDERS_LENGTH) return;
 
@@ -67,6 +91,49 @@ function TogglePanel(panel)
   else panel.style.display = '';
 }
 
+function SwitchPanel(array, index)
+{
+  for(let i = 0; i < array.length; i++)
+  {
+    if(i === index) if(array[i].style.display === '') array[i].style.display = 'none'; else array[i].style.display = '';
+    else array[i].style.display = 'none';
+  }
+}
+
+function PopulatePlaylist()
+{
+  PLAY_LIST.innerHTML = '';
+  if(playlist.length === 0) return;
+
+  for(let i = 0; i < playlist.length; i++)
+  {
+    let index = playlist[i];
+    let n = document.getElementById(index + 'name');
+    let d = document.createElement('div');
+    d.className = 'playlistDiv';
+
+    let d1 = document.createElement('div');
+    let b1 = document.createElement('button');
+    let b2 = document.createElement('button');
+
+    d1.innerHTML = n.dataset.displayname;
+    b1.innerHTML = 'P';
+    b2.innerHTML = 'R';
+
+    d.appendChild(b1);
+    d.appendChild(d1);
+    d.appendChild(b2);
+
+    PLAY_LIST.appendChild(d);
+  }
+}
+
+function ToggleHide()
+{
+  if(document.body.style.paddingTop === '0px') document.body.style.paddingTop = '50px';
+  else document.body.style.paddingTop = '0px';
+}
+
 function AssignNames()
 {
   for(let i = 0; i < NAMES_LENGTH; i++)
@@ -77,8 +144,38 @@ function AssignNames()
   }
 }
 
+function AssignButtons()
+{
+  for(let i = 0; i < BUTTONS_LENGTH; i++)
+  {
+    BUTTONS[i].onclick = function() {
+      AddToPlaylist(BUTTONS[i].dataset.id);
+    };
+  }
+}
+
+function AddToPlaylist(index)
+{
+  if(playlist.includes(index))
+  {
+    let i = playlist.indexOf(index);
+    playlist.splice(i, 1);
+    document.getElementById(index + 'button').innerHTML = '+';
+  }
+  else
+  {
+    playlist.push(index);
+    document.getElementById(index + 'button').innerHTML = '-';
+  }
+}
+
 function ToggleName(name)
 {
+  if(EDIT_SCREEN.style.display === '')
+  {
+    TogglePanel(EDIT_SCREEN);
+    return;
+  }
   let id = name.dataset.id;
   let fileLocation = name.dataset.filelocation;
   let displayName = name.dataset.displayname;
@@ -94,17 +191,63 @@ function SwitchMany()
 {
   many++;
   if(many > 1) many = 0;
+  if(many === 0)
+  {
+    MENU_MANY.innerHTML = 'One';
+  }
+  if(many === 1)
+  {
+    MENU_MANY.innerHTML = 'Many';
+  }
   for(let i = 0; i < ITEMS_LENGTH; i++)
   {
     if(many === 0)
     {
-      ITEMS[i].style.height = '400px';
-      ITEMS[i].style.width = '300px';
+      ITEMS[i].style.height = '300px';
+      ITEMS[i].style.width = '400px';
+      ITEMS[i].style.marginBottom = 0;
     }
     if(many === 1)
     {
-      ITEMS[i].style.height = (window.innerHeight - 100) + 'px';
-      ITEMS[i].style.width = window.innerWidth + 'px';
+      ITEMS[i].style.height = (window.innerHeight * 0.99) + 'px';
+      ITEMS[i].style.width = (window.innerWidth * 0.99) + 'px';
+      ITEMS[i].style.marginBottom = (window.innerWidth * 0.05) + 'px';
+    }
+  }
+}
+
+function PlayPause()
+{
+  play = !play;
+  if(play)
+  {
+    document.body.overflow = 'hidden';
+  }
+  else
+  {
+    document.body.overflow = 'auto';
+  }
+  PickOne();
+}
+
+function PickOne()
+{
+  clearInterval(interval);
+  if(play)
+  {
+    let r = Math.floor(Math.random() * playlist.length);
+    let p = document.getElementById(playlist[r] + 'item');
+    p.scrollIntoView();
+    current = p;
+    let c = document.getElementById(playlist[r] + 'content');
+    if(c.className === 'video')
+    {
+      c.play();
+      c.addEventListener('ended', PickOne, { once: true });
+    }
+    else if(c.className === 'image')
+    {
+      interval = setInterval(PickOne, timer * 1000);
     }
   }
 }
@@ -115,9 +258,14 @@ function Resize()
   {
     for(let i = 0; i < ITEMS_LENGTH; i++)
     {
-      ITEMS[i].style.height = (window.innerHeight - 100) + 'px';
-      ITEMS[i].style.width = window.innerWidth + 'px';
+      ITEMS[i].style.height = (window.innerHeight * 0.95) + 'px';
+      ITEMS[i].style.width = (window.innerWidth * 0.975) + 'px';
+      ITEMS[i].style.marginBottom = (window.innerWidth * 0.025) + 'px';
     }
+  }
+  if(play && current !== undefined)
+  {
+    current.scrollIntoView();
   }
 }
 
