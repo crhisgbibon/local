@@ -141,7 +141,6 @@ function ToggleHide()
   else
   {
     document.body.style.paddingTop = '0px';
-    console.log(current);
     if(current !== undefined)
     {
       current.scrollIntoView();
@@ -297,9 +296,7 @@ function GetTags()
 {
   playlist.length = 0;
   let search = SEARCH.value;
-  console.log(search);
   let tags = search.split(',')
-  console.log(tags);
   let TAGS_LENGTH = tags.length;
 
   for(let i = 0; i < TAGS_LENGTH; i++)
@@ -310,23 +307,18 @@ function GetTags()
 
   for(let i = 0; i < NAMES_LENGTH; i++)
   {
-    console.log(NAMES[i].dataset.tags);
-    console.log(JSON.parse(NAMES[i].dataset.tags));
     let json = JSON.parse(NAMES[i].dataset.tags);
     let JSON_LENGTH = json.length;
     for(let j = 0; j < JSON_LENGTH; j++)
     {
       json[j] = json[j].trim();
       json[j] = json[j].toUpperCase();
-      console.log(json[j]);
       if(tags.includes(json[j]))
       {
-        console.log('added');
         if(!playlist.includes(NAMES[i].dataset.id)) playlist.push(NAMES[i].dataset.id);
       }
     }
   }
-  console.log(playlist);
 }
 
 function ClearTags()
