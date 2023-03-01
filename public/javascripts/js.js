@@ -9,6 +9,10 @@ const MENU_LIST = document.getElementById('MENU_LIST');
 const MENU_INFO = document.getElementById('MENU_INFO');
 const MENU_MANY = document.getElementById('MENU_MANY');
 const MENU_TAGS = document.getElementById('MENU_TAGS');
+const SEARCH = document.getElementById('SEARCH');
+const MENU_GET = document.getElementById('MENU_GET');
+const MENU_CLEAR = document.getElementById('MENU_CLEAR');
+const MENU_NEXT = document.getElementById('MENU_NEXT');
 
 const PLAY_LIST = document.getElementById('PLAY_LIST');
 
@@ -45,6 +49,9 @@ MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.dis
 MENU_INFO.onclick = function() { ToggleInfo(); };
 MENU_MANY.onclick = function() { SwitchMany(); };
 MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, 1); };
+MENU_GET.onclick = function() { GetTags(); };
+MENU_CLEAR.onclick = function() { ClearTags(); };
+MENU_NEXT.onclick = function() { PickNext(); };
 
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
 
@@ -131,7 +138,15 @@ function PopulatePlaylist()
 function ToggleHide()
 {
   if(document.body.style.paddingTop === '0px') document.body.style.paddingTop = '50px';
-  else document.body.style.paddingTop = '0px';
+  else
+  {
+    document.body.style.paddingTop = '0px';
+    console.log(current);
+    if(current !== undefined)
+    {
+      current.scrollIntoView();
+    }
+  }
 }
 
 function AssignNames()
@@ -209,8 +224,8 @@ function SwitchMany()
     }
     if(many === 1)
     {
-      ITEMS[i].style.height = (window.innerHeight * 0.99) + 'px';
-      ITEMS[i].style.width = (window.innerWidth * 0.99) + 'px';
+      ITEMS[i].style.height = (window.innerHeight * 0.95) + 'px';
+      ITEMS[i].style.width = (window.innerWidth * 0.95) + 'px';
       ITEMS[i].style.marginBottom = (window.innerWidth * 0.05) + 'px';
     }
   }
@@ -221,10 +236,12 @@ function PlayPause()
   play = !play;
   if(play)
   {
+    MENU_PLAY.innerHTML = 'Pause';
     document.body.overflow = 'hidden';
   }
   else
   {
+    MENU_PLAY.innerHTML = 'Play';
     document.body.overflow = 'auto';
   }
   PickOne();
@@ -232,6 +249,7 @@ function PlayPause()
 
 function PickOne()
 {
+  if(playlist.length === 0) return;
   clearInterval(interval);
   if(play)
   {
@@ -252,6 +270,12 @@ function PickOne()
   }
 }
 
+function PickNext()
+{
+  clearInterval(interval);
+  PickOne();
+}
+
 function Resize()
 {
   if(many === 1)
@@ -259,14 +283,56 @@ function Resize()
     for(let i = 0; i < ITEMS_LENGTH; i++)
     {
       ITEMS[i].style.height = (window.innerHeight * 0.95) + 'px';
-      ITEMS[i].style.width = (window.innerWidth * 0.975) + 'px';
-      ITEMS[i].style.marginBottom = (window.innerWidth * 0.025) + 'px';
+      ITEMS[i].style.width = (window.innerWidth * 0.95) + 'px';
+      ITEMS[i].style.marginBottom = (window.innerWidth * 0.05) + 'px';
     }
   }
   if(play && current !== undefined)
   {
     current.scrollIntoView();
   }
+}
+
+function GetTags()
+{
+  playlist.length = 0;
+  let search = SEARCH.value;
+  console.log(search);
+  let tags = search.split(',')
+  console.log(tags);
+  let TAGS_LENGTH = tags.length;
+
+  for(let i = 0; i < TAGS_LENGTH; i++)
+  {
+    tags[i] = tags[i].trim();
+    tags[i] = tags[i].toUpperCase();
+  }
+
+  for(let i = 0; i < NAMES_LENGTH; i++)
+  {
+    console.log(NAMES[i].dataset.tags);
+    console.log(JSON.parse(NAMES[i].dataset.tags));
+    let json = JSON.parse(NAMES[i].dataset.tags);
+    let JSON_LENGTH = json.length;
+    for(let j = 0; j < JSON_LENGTH; j++)
+    {
+      json[j] = json[j].trim();
+      json[j] = json[j].toUpperCase();
+      console.log(json[j]);
+      if(tags.includes(json[j]))
+      {
+        console.log('added');
+        if(!playlist.includes(NAMES[i].dataset.id)) playlist.push(NAMES[i].dataset.id);
+      }
+    }
+  }
+  console.log(playlist);
+}
+
+function ClearTags()
+{
+  SEARCH.value = '';
+  playlist.length = 0;
 }
 
 window.addEventListener('resize', Resize);
