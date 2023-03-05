@@ -26,6 +26,8 @@ const MENU_LOOP = document.getElementById('MENU_LOOP');
 const MENU_RANDOM = document.getElementById('MENU_RANDOM');
 const MENU_MUTE = document.getElementById('MENU_MUTE');
 const MENU_LIST2 = document.getElementById('MENU_LIST2');
+const MENU_TIMER = document.getElementById('MENU_TIMER');
+const MENU_NAME = document.getElementById('MENU_NAME');
 
 const PLAY_LIST = document.getElementById('PLAY_LIST');
 const PLAY_WINDOW = document.getElementById('PLAY_WINDOW');
@@ -34,6 +36,8 @@ const EDIT_SCREEN = document.getElementById('EDIT_SCREEN');
 const EDIT_HOLDER = document.getElementById('EDIT_HOLDER');
 const EDIT_ID = document.getElementById('EDIT_ID');
 const EDIT_ADD = document.getElementById('EDIT_ADD');
+const EDIT_LAST = document.getElementById('EDIT_LAST');
+const EDIT_NEXT = document.getElementById('EDIT_NEXT');
 const EDIT_FILE = document.getElementById('EDIT_FILE');
 const EDIT_NAME = document.getElementById('EDIT_NAME');
 const EDIT_TAGS = document.getElementById('EDIT_TAGS');
@@ -70,6 +74,9 @@ MENU_RANDOM.onclick = function() { ToggleRandom(); };
 MENU_MUTE.onclick = function() { ToggleMute(); };
 MENU_LIST2.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
 
+
+EDIT_LAST.onclick = function() { EditLast(); };
+EDIT_NEXT.onclick = function() { EditNext(); };
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
 
 let many = 0;
@@ -92,7 +99,6 @@ AssignButtons(BUTTONS);
 
 let playlist = [];
 let interval = undefined;
-let timer = 5;
 
 function TogglePanel(panel)
 {
@@ -124,10 +130,12 @@ function PopulatePlaylist()
     d.id = index + 'playlistDiv';
 
     let d1 = document.createElement('div');
+    let d2 = document.createElement('div');
     let b1 = document.createElement('button');
     let b2 = document.createElement('button');
 
     d1.innerHTML = n.dataset.displayname;
+    d2.innerHTML = JSON.parse(n.dataset.tags);
     b1.innerHTML = 'P';
     b1.onclick = function() { PickThis(index); };
     b2.innerHTML = 'R';
@@ -135,6 +143,7 @@ function PopulatePlaylist()
 
     d.appendChild(b1);
     d.appendChild(d1);
+    d.appendChild(d2);
     d.appendChild(b2);
 
     PLAY_LIST.appendChild(d);
@@ -144,6 +153,7 @@ function PopulatePlaylist()
   d.id = 'tagManagerDiv';
 
   let i1 = document.createElement('input');
+  i1.type = 'text';
   i1.id = 'tagManager';
   let b1 = document.createElement('button');
   b1.innerHTML = '-';
@@ -161,12 +171,85 @@ function PopulatePlaylist()
 
 function AddTag()
 {
+  let len = playlist.length;
+  if(len === 0) return;
+  let tag = document.getElementById('tagManager').value;
+  if(tag === '') return;
+  for(let i = 0; i < len; i++)
+  {
+    let n = document.getElementById(playlist[i] + 'name');
+    let t = document.getElementById(playlist[i] + 'tag');
+    let oldTags = JSON.parse(n.dataset.tags);
+    if(!oldTags.includes(tag))
+    {
+      oldTags.push(tag);
+      let newTags = JSON.stringify(oldTags);
+      n.dataset.tags = newTags;
+      t.innerHTML = JSON.parse(newTags);
+  
+      $.ajax(
+      {
+        method: "POST",
+        url: "/updatetag",
+        data:
+        {
+          id:playlist[i],
+          newtags:newTags,
+        },
+        success:function(result)
+        {
 
+        },
+        error:function(result)
+        {
+
+        }
+      });
+    }
+  }
+  PopulatePlaylist();
 }
 
 function RemoveTag()
 {
-  
+  let len = playlist.length;
+  if(len === 0) return;
+  let tag = document.getElementById('tagManager').value;
+  if(tag === '') return;
+  for(let i = 0; i < len; i++)
+  {
+    let n = document.getElementById(playlist[i] + 'name');
+    let t = document.getElementById(playlist[i] + 'tag');
+    let oldTags = JSON.parse(n.dataset.tags);
+    let iO = oldTags.indexOf(tag);
+    if(Number.isInteger(iO))
+    {
+      oldTags.splice(iO, 1);
+      let newTags = JSON.stringify(oldTags);
+      n.dataset.tags = newTags;
+      t.innerHTML = JSON.parse(newTags);
+
+      $.ajax(
+      {
+        method: "POST",
+        url: "/updatetag",
+        data:
+        {
+          id:playlist[i],
+          newtags:newTags,
+        },
+        success:function(result)
+        {
+
+        },
+        error:function(result)
+        {
+
+        }
+      });
+    }
+  }
+  PopulatePlaylist();
 }
 
 function MinMode()
@@ -226,13 +309,11 @@ function ToggleMute()
   if(mute) MENU_MUTE.style.backgroundColor = 'var(--highlight)';
   else MENU_MUTE.style.backgroundColor = 'var(--front)';
 
-  if(mute)
+  let video = document.getElementById('activevideoplayer');
+  if(video !== null)
   {
-    let video = document.getElementById('activevideoplayer');
-    if(video !== null)
-    {
-      video.muted = true;
-    }
+    if(mute) video.muted = true;
+    else video.muted = false;
   }
 }
 
@@ -274,10 +355,9 @@ function AddToPlaylist(index)
 
 function ToggleName(name)
 {
-  if(EDIT_SCREEN.style.display === '')
+  if(EDIT_SCREEN.style.display === 'none')
   {
     TogglePanel(EDIT_SCREEN);
-    return;
   }
   EDIT_HOLDER.innerHTML = '';
   let id = name.dataset.id;
@@ -329,6 +409,32 @@ function ToggleName(name)
   EDIT_TAGS.value = tags;
 }
 
+function EditNext()
+{
+  let id = EDIT_ID.value;
+  id++;
+  if(id >= NAMES_LENGTH) id = 1;
+  EDIT_ID.value = id;
+  let newName = document.getElementById(id + 'name');
+  if(newName !== null)
+  {
+    ToggleName(newName);
+  }
+}
+
+function EditLast()
+{
+  let id = EDIT_ID.value;
+  id--;
+  if(id < 1) id = NAMES_LENGTH - 1;
+  EDIT_ID.value = id;
+  let newName = document.getElementById(id + 'name');
+  if(newName !== null)
+  {
+    ToggleName(newName);
+  }
+}
+
 function PlayPause()
 {
   play = !play;
@@ -347,9 +453,15 @@ function PlayPause()
 
 function PickThis(id)
 {
-  last = id;
+  let iO = 0;
+  if(playlist.includes(id))
+  {
+    iO = playlist.indexOf(id);
+    last = iO;
+  }
+  else last = 0;
   TogglePanel(PLAY_LIST);
-  PlayThis(id);
+  PlayThis(iO);
   if(!play)
   {
     play = true;
@@ -413,17 +525,23 @@ function PickOne()
 function PlayThis(i)
 {
   PLAY_WINDOW.innerHTML = '';
+  MENU_NAME.innerHTML = '';
   clearInterval(interval);
   let n = document.getElementById(playlist[i] + 'name');
   let fileType = n.dataset.filetype;
   let fileLocation = n.dataset.filelocation;
+  let displayName = n.dataset.displayname;
+
+  MENU_NAME.innerHTML = displayName;
 
   if(fileType === 'image')
   {
     let image = document.createElement('img');
     image.src = '/images/' + fileLocation;
     PLAY_WINDOW.appendChild(image);
-    interval = setInterval(PickOne, timer * 1000);
+    let timer = MENU_TIMER.value;
+    if(timer < 1) timer = 1;
+    interval = setInterval(PickOne, (timer * 1000));
   }
 
   if(fileType === 'video')

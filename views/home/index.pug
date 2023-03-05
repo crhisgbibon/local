@@ -18,10 +18,15 @@ block content
       button(class='tohide' id='MENU_RANDOM') R
       button(class='tohide' id='MENU_MUTE') M
       button(class='tohide' id='MENU_LIST2') Li
+      input(class='tohide' type='number' id='MENU_TIMER' value=5)
+      div(class='tohide' id='MENU_NAME')
 
   form(class='edit' id='EDIT_SCREEN' action='/edit' method='POST')
     div(id='EDIT_HOLDER')
-    button(id='EDIT_ADD' type='button') +
+    div(id='EDIT_CONTROLS')
+      button(id='EDIT_LAST' type='button') &lt;
+      button(id='EDIT_ADD' type='button') +
+      button(id='EDIT_NEXT' type='button') &gt;
     input(class='' id='EDIT_ID' name="EDIT_ID" type='text' value='' readonly)
     input(class='' id='EDIT_FILE' type='text' value='' readonly)
     input(class='' id='EDIT_NAME' name="EDIT_NAME" type='text' value='')
@@ -45,7 +50,7 @@ block content
               div(class='buttonDiv')
                 button(class='button' data-id=ref.id id=ref.id+'button') +
             div(class='controlB')
-              p(class='tag') #{ref.tags}
+              p(class='tag' id=ref.id+'tag') #{ref.tags}
 
     - else
 

@@ -40,3 +40,14 @@ exports.edit = function (req, res, next)
     references: rows,
   });
 };
+
+exports.updateTag = function (req, res, next)
+{
+  let id = req.body.id;
+  let newTags = req.body.newtags;
+
+  console.log(id);
+  console.log(newTags);
+
+  model.UpdateReferenceTags(id, newTags);
+};

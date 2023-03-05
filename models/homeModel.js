@@ -2,7 +2,7 @@ const db = require('better-sqlite3')('db/local.db');
 
 exports.GetAllReferences = function ()
 {
-  let rows = db.prepare(`SELECT * FROM 'references'`).all();
+  let rows = db.prepare(`SELECT * FROM 'references' ORDER BY displayName ASC`).all();
   let len = rows.length;
   for(let i = 0; i < len; i++)
   {
