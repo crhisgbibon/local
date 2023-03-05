@@ -3,19 +3,21 @@ extends ../layout
 block content
 
   div(id='MENU')
-    button(class='' id='MENU_HIDE') Hide
     button(class='' id='MENU_PLAY') Play
+    button(class='' id='MENU_HIDE') Hide
     button(class='' id='MENU_LIST') List
     input(class='' type='search' id='SEARCH' placeholder='Tags...')
     button(class='' id='MENU_GET') Get
     button(class='' id='MENU_CLEAR') Clear
 
   div(id='MENU2')
-      button(class='' id='MENU_HIDE2') H
-      button(class='' id='MENU_NEXT') N
-      button(class='' id='MENU_LOOP') L
-      button(class='' id='MENU_RANDOM') R
-      button(class='' id='MENU_LIST2') Li
+      button(class='seethrough' id='MENU_MIN') &lt;
+      button(class='tohide' id='MENU_HIDE2') H
+      button(class='tohide' id='MENU_NEXT') N
+      button(class='tohide' id='MENU_LOOP') L
+      button(class='tohide' id='MENU_RANDOM') R
+      button(class='tohide' id='MENU_MUTE') M
+      button(class='tohide' id='MENU_LIST2') Li
 
   form(class='edit' id='EDIT_SCREEN' action='/edit' method='POST')
     div(id='EDIT_HOLDER')

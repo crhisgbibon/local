@@ -20,9 +20,11 @@ const SEARCH = document.getElementById('SEARCH');
 const MENU_GET = document.getElementById('MENU_GET');
 const MENU_CLEAR = document.getElementById('MENU_CLEAR');
 
+const MENU_MIN = document.getElementById('MENU_MIN');
 const MENU_NEXT = document.getElementById('MENU_NEXT');
 const MENU_LOOP = document.getElementById('MENU_LOOP');
 const MENU_RANDOM = document.getElementById('MENU_RANDOM');
+const MENU_MUTE = document.getElementById('MENU_MUTE');
 const MENU_LIST2 = document.getElementById('MENU_LIST2');
 
 const PLAY_LIST = document.getElementById('PLAY_LIST');
@@ -54,16 +56,18 @@ const BUTTONS_LENGTH = BUTTONS.length;
 
 const SCREENS = [PLAY_LIST];
 
-MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
-MENU_HIDE2.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_PLAY.onclick = function() { PlayPause(); };
+MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
 MENU_GET.onclick = function() { GetTags(); };
 MENU_CLEAR.onclick = function() { ClearTags(); };
 
+MENU_MIN.onclick = function() { MinMode(); };
+MENU_HIDE2.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_NEXT.onclick = function() { PickNext(); };
 MENU_LOOP.onclick = function() { ToggleLoop(); };
 MENU_RANDOM.onclick = function() { ToggleRandom(); };
+MENU_MUTE.onclick = function() { ToggleMute(); };
 MENU_LIST2.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
 
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
@@ -73,6 +77,7 @@ let index = 0;
 let play = false;
 let loop = false;
 let random = true;
+let mute = false;
 let last = undefined;
 MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
 
@@ -116,6 +121,7 @@ function PopulatePlaylist()
     let n = document.getElementById(index + 'name');
     let d = document.createElement('div');
     d.className = 'playlistDiv';
+    d.id = index + 'playlistDiv';
 
     let d1 = document.createElement('div');
     let b1 = document.createElement('button');
@@ -125,12 +131,62 @@ function PopulatePlaylist()
     b1.innerHTML = 'P';
     b1.onclick = function() { PickThis(index); };
     b2.innerHTML = 'R';
+    b2.onclick = function() { RemoveThis(index); };
 
     d.appendChild(b1);
     d.appendChild(d1);
     d.appendChild(b2);
 
     PLAY_LIST.appendChild(d);
+  }
+
+  let d = document.createElement('div');
+  d.id = 'tagManagerDiv';
+
+  let i1 = document.createElement('input');
+  i1.id = 'tagManager';
+  let b1 = document.createElement('button');
+  b1.innerHTML = '-';
+  b1.onclick = function() { RemoveTag(); };
+  let b2 = document.createElement('button');
+  b2.innerHTML = '+';
+  b2.onclick = function() { AddTag(); };
+
+  d.appendChild(b1);
+  d.appendChild(i1);
+  d.appendChild(b2);
+
+  PLAY_LIST.appendChild(d);
+}
+
+function AddTag()
+{
+
+}
+
+function RemoveTag()
+{
+  
+}
+
+function MinMode()
+{
+  let tohide = document.getElementsByClassName('tohide');
+  if(tohide.length === 0) return;
+  let len = tohide.length;
+  if(tohide[0].style.display === '')
+  {
+    for(let i = 0; i < len; i++)
+    {
+      tohide[i].style.display = 'none';
+    }
+  }
+  else
+  {
+    for(let i = 0; i < len; i++)
+    {
+      tohide[i].style.display = '';
+    }
   }
 }
 
@@ -162,6 +218,22 @@ function ToggleRandom()
   random = !random;
   if(random) MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
   else MENU_RANDOM.style.backgroundColor = 'var(--front)';
+}
+
+function ToggleMute()
+{
+  mute = !mute;
+  if(mute) MENU_MUTE.style.backgroundColor = 'var(--highlight)';
+  else MENU_MUTE.style.backgroundColor = 'var(--front)';
+
+  if(mute)
+  {
+    let video = document.getElementById('activevideoplayer');
+    if(video !== null)
+    {
+      video.muted = true;
+    }
+  }
 }
 
 function AssignNames()
@@ -197,6 +269,7 @@ function AddToPlaylist(index)
     playlist.push(index);
     document.getElementById(index + 'button').innerHTML = '-';
   }
+  PopulatePlaylist();
 }
 
 function ToggleName(name)
@@ -285,6 +358,14 @@ function PickThis(id)
   }
 }
 
+function RemoveThis(id)
+{
+  let i = playlist.indexOf(id);
+  playlist.splice(i, 1);
+  let el = document.getElementById(id + 'playlistDiv');
+  if(el !== null) PLAY_LIST.removeChild(el);
+}
+
 function PickOne()
 {
   if(playlist.length === 0) return;
@@ -349,7 +430,9 @@ function PlayThis(i)
   {  
     let video = document.createElement('video');
     video.controls = true;
+    video.id = 'activevideoplayer';
     video.src = '/videos/' + fileLocation;
+    if(mute) video.muted = true;
     video.play();
     video.addEventListener('ended', PickOne, { once: true });
     PLAY_WINDOW.appendChild(video);
@@ -395,4 +478,5 @@ function ClearTags()
 {
   SEARCH.value = '';
   playlist.length = 0;
+  PLAY_LIST.innerHTML = '';
 }
