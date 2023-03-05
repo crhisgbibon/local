@@ -1,25 +1,37 @@
 'use strict';
 
+function CalculateVh()
+{
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+}
+
+window.addEventListener('DOMContentLoaded', CalculateVh);
+window.addEventListener('resize', CalculateVh);
+window.addEventListener('orientationchange', CalculateVh);
+
 const MENU = document.getElementById('MENU');
 const MENU_HIDE = document.getElementById('MENU_HIDE');
 const MENU2 = document.getElementById('MENU2');
 const MENU_HIDE2 = document.getElementById('MENU_HIDE2');
 const MENU_PLAY = document.getElementById('MENU_PLAY');
 const MENU_LIST = document.getElementById('MENU_LIST');
-const MENU_INFO = document.getElementById('MENU_INFO');
-const MENU_MANY = document.getElementById('MENU_MANY');
-const MENU_TAGS = document.getElementById('MENU_TAGS');
 const SEARCH = document.getElementById('SEARCH');
 const MENU_GET = document.getElementById('MENU_GET');
 const MENU_CLEAR = document.getElementById('MENU_CLEAR');
+
 const MENU_NEXT = document.getElementById('MENU_NEXT');
+const MENU_LOOP = document.getElementById('MENU_LOOP');
+const MENU_RANDOM = document.getElementById('MENU_RANDOM');
+const MENU_LIST2 = document.getElementById('MENU_LIST2');
 
 const PLAY_LIST = document.getElementById('PLAY_LIST');
-
-const TAG_LIST = document.getElementById('TAG_LIST');
+const PLAY_WINDOW = document.getElementById('PLAY_WINDOW');
 
 const EDIT_SCREEN = document.getElementById('EDIT_SCREEN');
+const EDIT_HOLDER = document.getElementById('EDIT_HOLDER');
 const EDIT_ID = document.getElementById('EDIT_ID');
+const EDIT_ADD = document.getElementById('EDIT_ADD');
 const EDIT_FILE = document.getElementById('EDIT_FILE');
 const EDIT_NAME = document.getElementById('EDIT_NAME');
 const EDIT_TAGS = document.getElementById('EDIT_TAGS');
@@ -40,60 +52,46 @@ const NAMES_LENGTH = NAMES.length;
 const BUTTONS = document.getElementsByClassName('button');
 const BUTTONS_LENGTH = BUTTONS.length;
 
-const SCREENS = [PLAY_LIST, TAG_LIST];
+const SCREENS = [PLAY_LIST];
 
 MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_HIDE2.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_PLAY.onclick = function() { PlayPause(); };
 MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
-MENU_INFO.onclick = function() { ToggleInfo(); };
-MENU_MANY.onclick = function() { SwitchMany(); };
-MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, 1); };
 MENU_GET.onclick = function() { GetTags(); };
 MENU_CLEAR.onclick = function() { ClearTags(); };
+
 MENU_NEXT.onclick = function() { PickNext(); };
+MENU_LOOP.onclick = function() { ToggleLoop(); };
+MENU_RANDOM.onclick = function() { ToggleRandom(); };
+MENU_LIST2.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
 
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
 
 let many = 0;
 let index = 0;
 let play = false;
+let loop = false;
+let random = true;
+let last = undefined;
+MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
 
 MENU.style.width = '100%';
 
 TogglePanel(EDIT_SCREEN);
 TogglePanel(PLAY_LIST);
-TogglePanel(TAG_LIST);
+TogglePanel(PLAY_WINDOW);
 
 AssignNames(NAMES);
 AssignButtons(BUTTONS);
 
 let playlist = [];
-let current = undefined;
 let interval = undefined;
 let timer = 5;
 
-function ToggleInfo()
-{
-  if(CONTROLS_LENGTH !== HOLDERS_LENGTH) return;
-
-  for(let i = 0; i < CONTROLS_LENGTH; i++)
-  {
-    if(CONTROLS[i].style.display === '')
-    {
-      CONTROLS[i].style.display = 'none';
-      HOLDERS[i].style.maxHeight = '100%';
-    }
-    else
-    {
-      CONTROLS[i].style.display = '';
-      HOLDERS[i].style.maxHeight = '75%';
-    }
-  }
-}
-
 function TogglePanel(panel)
 {
+  if(typeof(panel) === 'string') panel = document.getElementById(panel);
   if(panel.style.display === '') panel.style.display = 'none';
   else panel.style.display = '';
 }
@@ -125,6 +123,7 @@ function PopulatePlaylist()
 
     d1.innerHTML = n.dataset.displayname;
     b1.innerHTML = 'P';
+    b1.onclick = function() { PickThis(index); };
     b2.innerHTML = 'R';
 
     d.appendChild(b1);
@@ -137,15 +136,32 @@ function PopulatePlaylist()
 
 function ToggleHide()
 {
-  if(document.body.style.paddingTop === '0px') document.body.style.paddingTop = '50px';
+  if(document.body.style.paddingTop === '0px')
+  {
+    document.body.style.paddingTop = '50px';
+    document.documentElement.style.setProperty('--play_window_top', 'calc(var(--vh) * 7.5)');
+    document.documentElement.style.setProperty('--play_window_height', 'calc(var(--vh) * 92.5)');
+  }
   else
   {
     document.body.style.paddingTop = '0px';
-    if(current !== undefined)
-    {
-      current.scrollIntoView();
-    }
+    document.documentElement.style.setProperty('--play_window_top', '0');
+    document.documentElement.style.setProperty('--play_window_height', 'calc(var(--vh) * 100)');
   }
+}
+
+function ToggleLoop()
+{
+  loop = !loop;
+  if(loop) MENU_LOOP.style.backgroundColor = 'var(--highlight)';
+  else MENU_LOOP.style.backgroundColor = 'var(--front)';
+}
+
+function ToggleRandom()
+{
+  random = !random;
+  if(random) MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
+  else MENU_RANDOM.style.backgroundColor = 'var(--front)';
 }
 
 function AssignNames()
@@ -190,44 +206,54 @@ function ToggleName(name)
     TogglePanel(EDIT_SCREEN);
     return;
   }
+  EDIT_HOLDER.innerHTML = '';
   let id = name.dataset.id;
   let fileLocation = name.dataset.filelocation;
+  let fileType = name.dataset.filetype;
   let displayName = name.dataset.displayname;
   let tags = JSON.parse(name.dataset.tags);
+
+  if(playlist.includes(id))
+  {
+    EDIT_ADD.innerHTML = '-';
+  }
+  else
+  {
+    EDIT_ADD.innerHTML = '+';
+  }
+
+  EDIT_ADD.onclick = function() {
+
+    AddToPlaylist(id);
+
+    if(playlist.includes(id))
+    {
+      EDIT_ADD.innerHTML = '-';
+    }
+    else
+    {
+      EDIT_ADD.innerHTML = '+';
+    }
+
+  };
+
+  if(fileType === 'image')
+  {
+    EDIT_HOLDER.innerHTML = `
+      <img class='holder' src=" ` + ('/images/' + fileLocation) + `" '>
+    `;
+  }
+  else if(fileType === 'video')
+  {
+    EDIT_HOLDER.innerHTML = `
+      <video class='holder' controls src=" ` + ('/videos/' + fileLocation) + `" '>
+    `;
+  }
   if(EDIT_SCREEN.style.display === 'none') TogglePanel(EDIT_SCREEN);
   EDIT_ID.value = id;
   EDIT_FILE.value = fileLocation;
   EDIT_NAME.value = displayName;
   EDIT_TAGS.value = tags;
-}
-
-function SwitchMany()
-{
-  many++;
-  if(many > 1) many = 0;
-  if(many === 0)
-  {
-    MENU_MANY.innerHTML = 'One';
-  }
-  if(many === 1)
-  {
-    MENU_MANY.innerHTML = 'Many';
-  }
-  for(let i = 0; i < ITEMS_LENGTH; i++)
-  {
-    if(many === 0)
-    {
-      ITEMS[i].style.height = '300px';
-      ITEMS[i].style.width = '400px';
-      ITEMS[i].style.marginBottom = 0;
-    }
-    if(many === 1)
-    {
-      ITEMS[i].style.height = (window.innerHeight * 0.95) + 'px';
-      ITEMS[i].style.width = (window.innerWidth * 0.95) + 'px';
-      ITEMS[i].style.marginBottom = (window.innerWidth * 0.05) + 'px';
-    }
-  }
 }
 
 function PlayPause()
@@ -236,36 +262,97 @@ function PlayPause()
   if(play)
   {
     MENU_PLAY.innerHTML = 'Pause';
-    document.body.overflow = 'hidden';
+    PLAY_WINDOW.style.display = '';
   }
   else
   {
     MENU_PLAY.innerHTML = 'Play';
-    document.body.overflow = 'auto';
+    PLAY_WINDOW.style.display = 'none';
   }
   PickOne();
+}
+
+function PickThis(id)
+{
+  last = id;
+  TogglePanel(PLAY_LIST);
+  PlayThis(id);
+  if(!play)
+  {
+    play = true;
+    MENU_PLAY.innerHTML = 'Pause';
+    PLAY_WINDOW.style.display = '';
+  }
 }
 
 function PickOne()
 {
   if(playlist.length === 0) return;
-  clearInterval(interval);
   if(play)
   {
-    let r = Math.floor(Math.random() * playlist.length);
-    let p = document.getElementById(playlist[r] + 'item');
-    p.scrollIntoView();
-    current = p;
-    let c = document.getElementById(playlist[r] + 'content');
-    if(c.className === 'video')
+    let i = undefined;
+    if(loop)
     {
-      c.play();
-      c.addEventListener('ended', PickOne, { once: true });
+      if(last === undefined)
+      {
+        i = 0;
+        last = i;
+      }
+      else
+      {
+        i = last;
+      }
     }
-    else if(c.className === 'image')
+    else
     {
-      interval = setInterval(PickOne, timer * 1000);
+      if(random)
+      {
+        i = Math.floor(Math.random() * playlist.length);
+        last = i;
+      }
+      else
+      {
+        if(last === undefined)
+        {
+          i = 0;
+          last = i;
+        }
+        else
+        {
+          i = parseInt(last) + 1;
+          if(i >= playlist.length) i = 0;
+          last = i;
+        }
+      }
     }
+    PlayThis(i);
+  }
+}
+
+function PlayThis(i)
+{
+  PLAY_WINDOW.innerHTML = '';
+  clearInterval(interval);
+  let n = document.getElementById(playlist[i] + 'name');
+  let fileType = n.dataset.filetype;
+  let fileLocation = n.dataset.filelocation;
+
+  if(fileType === 'image')
+  {
+    let image = document.createElement('img');
+    image.src = '/images/' + fileLocation;
+    PLAY_WINDOW.appendChild(image);
+    interval = setInterval(PickOne, timer * 1000);
+  }
+
+  if(fileType === 'video')
+  {  
+    let video = document.createElement('video');
+    video.controls = true;
+    video.src = '/videos/' + fileLocation;
+    video.play();
+    video.addEventListener('ended', PickOne, { once: true });
+    PLAY_WINDOW.appendChild(video);
   }
 }
 
@@ -273,23 +360,6 @@ function PickNext()
 {
   clearInterval(interval);
   PickOne();
-}
-
-function Resize()
-{
-  if(many === 1)
-  {
-    for(let i = 0; i < ITEMS_LENGTH; i++)
-    {
-      ITEMS[i].style.height = (window.innerHeight * 0.95) + 'px';
-      ITEMS[i].style.width = (window.innerWidth * 0.95) + 'px';
-      ITEMS[i].style.marginBottom = (window.innerWidth * 0.05) + 'px';
-    }
-  }
-  if(play && current !== undefined)
-  {
-    current.scrollIntoView();
-  }
 }
 
 function GetTags()
@@ -326,5 +396,3 @@ function ClearTags()
   SEARCH.value = '';
   playlist.length = 0;
 }
-
-window.addEventListener('resize', Resize);

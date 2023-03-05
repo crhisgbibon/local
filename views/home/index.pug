@@ -6,54 +6,45 @@ block content
     button(class='' id='MENU_HIDE') Hide
     button(class='' id='MENU_PLAY') Play
     button(class='' id='MENU_LIST') List
-    button(class='' id='MENU_INFO') Info
-    button(class='' id='MENU_MANY') One
-    button(class='' id='MENU_TAGS') Tags
-    input(class='' type='search' id='SEARCH' placeholder='Get Tags...')
+    input(class='' type='search' id='SEARCH' placeholder='Tags...')
     button(class='' id='MENU_GET') Get
     button(class='' id='MENU_CLEAR') Clear
-    button(class='' id='MENU_NEXT') Next
 
   div(id='MENU2')
       button(class='' id='MENU_HIDE2') H
+      button(class='' id='MENU_NEXT') N
+      button(class='' id='MENU_LOOP') L
+      button(class='' id='MENU_RANDOM') R
+      button(class='' id='MENU_LIST2') Li
 
   form(class='edit' id='EDIT_SCREEN' action='/edit' method='POST')
-    label(for='EDIT_SCREEN') Edit
-    label(for='EDIT_ID') ID:
+    div(id='EDIT_HOLDER')
+    button(id='EDIT_ADD' type='button') +
     input(class='' id='EDIT_ID' name="EDIT_ID" type='text' value='' readonly)
-    label(for='EDIT_FILE') File:
     input(class='' id='EDIT_FILE' type='text' value='' readonly)
-    label(for='EDIT_NAME') Name:
     input(class='' id='EDIT_NAME' name="EDIT_NAME" type='text' value='')
-    label(for='EDIT_TAGS') Tags:
     input(class='' id='EDIT_TAGS' name="EDIT_TAGS" type='text' value='')
     input(class='' id='EDIT_SUBMIT' type='submit')
     button(class='' id='EDIT_CLOSE' type='button') Close
 
-  div(class='' id='PLAY_LIST') playlist
+  div(class='' id='PLAY_LIST')
 
-  div(class='' id='TAG_LIST') taglist
+  div(class='' id='PLAY_WINDOW')
 
-  - if(references)
+  div(class='' id='REFERENCES')
 
-    each ref in references
-      div(class='item' id=ref.id+'item')
-        - if(ref.fileType === 'image')
-            div(class='holder')
-              img(class='image' id=ref.id+'content' src='/images/' + ref.fileLocation)
-        - if(ref.fileType === 'video')
-            div(class='holder')
-              video(class='video' id=ref.id+'content' controls)
-                source(src='/videos/' + ref.fileLocation type="video/mp4")
-        div(class='control')
-          div(class='controlT')
-            p(class='name' id=ref.id+'name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
-            div(class='buttonDiv')
-              button(class='button' data-id=ref.id id=ref.id+'button') +
-          div(class='controlB')
-            p(class='tag') #{ref.tags}
-          
+    - if(references)
 
-  - else
+      each ref in references
+        div(class='item' id=ref.id+'item')
+          div(class='control')
+            div(class='controlT')
+              p(class='name' id=ref.id+'name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
+              div(class='buttonDiv')
+                button(class='button' data-id=ref.id id=ref.id+'button') +
+            div(class='controlB')
+              p(class='tag') #{ref.tags}
 
-    li(class='') No references found.
+    - else
+
+      li(class='') No references found.

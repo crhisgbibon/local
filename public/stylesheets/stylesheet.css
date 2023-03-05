@@ -1,14 +1,28 @@
 :root{
-  --themeBack: rgb(255, 255, 255);
-  --themeColor: rgb(225, 225, 225);
+  --back: rgb(255, 255, 255);
+  --mid: rgb(225, 225, 225);
+  --front: rgb(100, 100, 100);
+  --highlight: rgb(125, 125, 125);
+
+  --itemWidth: 400px;
+
+  --play_window_top: calc(var(--vh) * 7.5);
+  --play_window_height: calc(var(--vh) * 92.5);
 }
 
 body{
   display: block;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family:Arial, Helvetica, sans-serif;
   font-size: 16px;
   padding-top: 50px;
-  background-color: var(--themeBack);
+  background-color: var(--back);
+  color: var(--front);
+}
+
+body>*{
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 button{
@@ -16,13 +30,12 @@ button{
   height: 100%;
   max-width: 50px;
   max-height: 50px;
-  background-color: var(--themeColor);
-  border: 1px solid var(--themeColor);
-  border-radius: 25%;
+  background-color: var(--front);
+  color: var(--back);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  border: 0;
 }
 
 input{
@@ -30,17 +43,22 @@ input{
   height: 100%;
   max-width: 500px;
   max-height: 50px;
-  border-radius: 6px;
-  padding: 2px;
-  border: 1px solid var(--themeColor);
 }
 
 button:hover{
-  transform: scale(102%, 102%);
+  background-color: var(--highlight);
 }
 
 button:active{
-  transform: scale(98%, 98%);
+  transform: scale(95%, 95%);
+}
+
+.name:hover{
+  background-color: var(--highlight);
+}
+
+.name:active{
+  transform: scale(95%, 95%);
 }
 
 #MENU, #MENU2{
@@ -50,21 +68,19 @@ button:active{
   flex-direction: row;
   align-items: center;
   justify-content: left;
-  height: 50px;
-  margin: 0;
-  padding: 0;
+  height: calc(var(--vh) * 7.5);
 }
 
 #MENU{
   width: 100%;
-  background-color: white;
-  z-index: 20;
+  background-color: var(--back);
+  z-index: 200;
 }
 
 #MENU2{
   background-color: none;
-  width: 50px;
-  z-index: 10;
+  width: 100%;
+  z-index: 190;
 }
 
 #MENU button, #MENU2 button{
@@ -75,25 +91,20 @@ button:active{
 }
 
 #MENU input{
-  margin-left: 2px;
-  margin-right: 2px;
+  margin-left: 1px;
+  margin-right: 1px;
+  height: 49px;
 }
 
 .item{
-  height: 300px;
-  width: 400px;
+  width: var(--itemWidth);
   display: flex;
   float: left;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgb(225, 225, 225);
-  border-radius: 0px;
-}
-
-.itemholder{
-  max-height: 75%;
-  max-width: 100%;
+  border: 1px solid var(--mid);
+  box-sizing: border-box;
 }
 
 .holder{
@@ -101,93 +112,74 @@ button:active{
   max-width: 100%;
 }
 
-.image{
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-
-.video{
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-
 .control{
   width: 100%;
   max-width: 100%;
-  height: 25%;
+  height: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .controlT, .controlB{
   width: 100%;
   max-width: 100%;
-  height: 50%;
-  margin: 0;
-  padding: 0;
+  height: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
-.tag{
+.buttonDiv{
+  min-width: 50px;
+  height: 100%;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .name{
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  width: 75%;
-  height: 85%;
+  width: 100%;
+  height: 50px;
+  padding-left: 2px;
   cursor: pointer;
-  background: var(--themeColor);
-  border-radius: 6px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+  background-color: var(--front);
+  color: var(--back);
 }
 
-.name:hover{
-  transform: scale(102%, 102%);
-}
-
-.name:active{
-  transform: scale(98%, 98%);
-}
-
-.buttonDiv{
-  width: 25%;
-  height: 100%;
+.tag{
+  width: 100%;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+  padding-left: 2px;
 }
 
-#PLAY_LIST, #TAG_LIST, #EDIT_SCREEN{
+#REFERENCES{
   position: fixed;
-  z-index: 10;
-  top: 100px;
-  left: 25%;
-  width: 50%;
-  min-width: 100px;
-  min-height: 300px;
-  background-color: white;
-  border: 1px solid var(--themeColor);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  padding: 2px;
-  border-radius: 6px;
+  min-height: calc(var(--vh) * 92.5);
+  max-height: calc(var(--vh) * 92.5);
+  overflow-y: auto;
+}
+
+#PLAY_LIST, #EDIT_SCREEN{
+  position: fixed;
+  z-index: 50;
+  top: calc(var(--vh) * 7.5);
+  width: 100%;
+  min-height: calc(var(--vh) * 92.5);
+  max-height: calc(var(--vh) * 92.5);
+  background-color: var(--back);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,46 +188,71 @@ button:active{
 }
 
 #EDIT_SCREEN{
-  z-index: 20;
+  z-index: 5;
 }
 
-#EDIT_SCREEN label{
-  padding: 2px;
-  margin: 2px;
+#EDIT_HOLDER{
+  max-width: 100%;
+  max-height: calc(var(--vh) * 50);
+  margin-bottom: 4px;
+}
+
+.holder{
+  max-width: 100%;
+  max-height: calc(var(--vh) * 50);
+}
+
+#EDIT_FILE{
+  color: var(--highlight);
+}
+
+#EDIT_ADD{
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 #EDIT_SCREEN input[type='text']{
   width: 90%;
-  height: 50px;
-  text-align: center;
-  padding: 2px;
-  margin: 2px;
+  height: 25px;
+  text-align: left;
+}
+
+#EDIT_ID{
+  display: none;
 }
 
 #EDIT_SCREEN input[type='submit']{
   width: 50%;
+  min-width: 100px;
   max-width: 300px;
-  height: 50px;
+  height: 25px;
   text-align: center;
-  padding: 2px;
-  margin: 2px;
-  border-radius: 6px;
-  background-color: var(--themeColor);
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: 0;
+  background-color: var(--front);
+  color: var(--back);
+}
+
+#EDIT_SCREEN input[type='submit']:hover{
+  background-color: var(--highlight);
+}
+
+#EDIT_SCREEN input[type='submit']:active{
+  transform: scale(95%, 95%);
 }
 
 #EDIT_SCREEN button{
   width: 50%;
+  min-width: 100px;
   max-width: 300px;
-  height: 50px;
+  height: 25px;
   text-align: center;
-  padding: 2px;
-  margin: 2px;
-  border-radius: 6px;
 }
 
 .playlistDiv{
-  width: 100%;
-  height: 30px;
+  width: 90%;
+  height: 25px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -243,11 +260,36 @@ button:active{
   margin-bottom: 4px;
 }
 
-.playlistDiv div, .playlistDiv button{
-  width: 75%;
-  height: 30px;
-  border-radius: 0;
+.playlistDiv div{
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.playlistDiv button{
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#PLAY_WINDOW{
+  position: fixed;
+  z-index: 30;
+  top: var(--play_window_top);
+  left: 0;
+  width: 100%;
+  min-height: var(--play_window_height);
+  max-height: var(--play_window_height);
+  background-color: var(--back);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#PLAY_WINDOW img, #PLAY_WINDOW video{
+  max-width: 100%;
+  min-height: var(--play_window_height);
+  max-height: var(--play_window_height);
 }
