@@ -13,3 +13,5 @@ db.serialize(() => {
     );
   `);
 });
+
+db.close();
