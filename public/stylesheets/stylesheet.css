@@ -350,10 +350,16 @@ button:active{
   justify-content: center;
 }
 
-#PLAY_WINDOW img, #PLAY_WINDOW video{
+#PLAY_WINDOW img{
   object-fit: cover;
   max-width: 100vw;
   max-height: var(--play_window_height);
+}
+
+#PLAY_WINDOW video{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 #tagManagerDiv{
