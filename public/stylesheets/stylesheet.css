@@ -126,6 +126,7 @@ button:active{
 #MENU_NAME{
   background-color: var(--front);
   color: var(--back);
+  height: 100%;
   max-height: 50px;
   padding-left: 4px;
   padding-right: 4px;
