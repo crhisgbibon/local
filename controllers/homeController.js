@@ -4,10 +4,12 @@ const { body, validationResult } = require("express-validator");
 exports.index = function (req, res, next)
 {
   const rows = model.GetAllReferences();
+  const tags = model.GetAllUniqueTags();
   res.render('home/index', {
     header: 'Local',
     title: 'Local',
     references: rows,
+    tags: tags,
   });
 };
 
@@ -32,13 +34,6 @@ exports.edit = function (req, res, next)
 
   model.UpdateReferenceName(id, newName);
   model.UpdateReferenceTags(id, newTags);
-
-  const rows = model.GetAllReferences();
-  res.render('home/index', {
-    header: 'Local',
-    title: 'Local',
-    references: rows,
-  });
 };
 
 exports.updateTag = function (req, res, next)

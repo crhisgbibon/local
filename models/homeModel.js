@@ -11,6 +11,24 @@ exports.GetAllReferences = function ()
   return rows;
 };
 
+exports.GetAllUniqueTags = function ()
+{
+  let rows = db.prepare(`SELECT (tags) FROM 'references'`).all();
+  let len = rows.length;
+  let tags = [];
+  for(let i = 0; i < len; i++)
+  {
+    let t = JSON.parse(rows[i].tags);
+    let tLen = t.length;
+    for(p = 0; p < tLen; p++)
+    {
+      if(!tags.includes(t[p].trim())) tags.push(t[p].trim());
+    }
+  }
+  tags.sort();
+  return tags;
+};
+
 exports.UpdateReferenceName = function (id, newName)
 {
   console.log("changing row " + id + " name to " + newName);

@@ -16,6 +16,7 @@ const MENU2 = document.getElementById('MENU2');
 const MENU_HIDE2 = document.getElementById('MENU_HIDE2');
 const MENU_PLAY = document.getElementById('MENU_PLAY');
 const MENU_LIST = document.getElementById('MENU_LIST');
+const MENU_TAGS = document.getElementById('MENU_TAGS');
 const SEARCH = document.getElementById('SEARCH');
 const MENU_GET = document.getElementById('MENU_GET');
 const MENU_CLEAR = document.getElementById('MENU_CLEAR');
@@ -28,6 +29,8 @@ const MENU_MUTE = document.getElementById('MENU_MUTE');
 const MENU_LIST2 = document.getElementById('MENU_LIST2');
 const MENU_TIMER = document.getElementById('MENU_TIMER');
 const MENU_NAME = document.getElementById('MENU_NAME');
+
+const TAG_LIST = document.getElementById('TAG_LIST');
 
 const PLAY_LIST = document.getElementById('PLAY_LIST');
 const PLAY_WINDOW = document.getElementById('PLAY_WINDOW');
@@ -58,11 +61,17 @@ const NAMES_LENGTH = NAMES.length;
 const BUTTONS = document.getElementsByClassName('button');
 const BUTTONS_LENGTH = BUTTONS.length;
 
-const SCREENS = [PLAY_LIST];
+const ADDTAGS = document.getElementsByClassName('tagAdd');
+const ADDTAGS_LENGTH = ADDTAGS.length;
+const REMOVETAGS = document.getElementsByClassName('tagRemove');
+const REMOVETAGS_LENGTH = REMOVETAGS.length;
+
+const SCREENS = [PLAY_LIST, TAG_LIST];
 
 MENU_PLAY.onclick = function() { PlayPause(); };
 MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
 MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
+MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, 1); };
 MENU_GET.onclick = function() { GetTags(); };
 MENU_CLEAR.onclick = function() { ClearTags(); };
 
@@ -91,11 +100,14 @@ MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
 MENU.style.width = '100%';
 
 TogglePanel(EDIT_SCREEN);
+TogglePanel(TAG_LIST);
 TogglePanel(PLAY_LIST);
 TogglePanel(PLAY_WINDOW);
 
 AssignNames(NAMES);
 AssignButtons(BUTTONS);
+AssignRemove(REMOVETAGS);
+AssignAdd(ADDTAGS);
 
 let playlist = [];
 let interval = undefined;
@@ -336,6 +348,48 @@ function AssignButtons()
     };
   }
 }
+
+function AssignAdd()
+{
+  for(let i = 0; i < ADDTAGS_LENGTH; i++)
+  {
+    ADDTAGS[i].onclick = function() {
+      AddToTags(ADDTAGS[i].dataset.tag);
+    };
+  }
+}
+
+function AssignRemove()
+{
+  for(let i = 0; i < REMOVETAGS_LENGTH; i++)
+  {
+    REMOVETAGS[i].onclick = function() {
+      RemoveFromTags(REMOVETAGS[i].dataset.tag);
+    };
+  }
+}
+
+function AddToTags(tagToAdd)
+{
+  let tags = [];
+  if(SEARCH.value !== null) tags = SEARCH.value.split(',');
+  if(!tags.includes(tagToAdd)) tags.push(tagToAdd);
+  if(tags[0] === '') tags.splice(0, 1);
+  SEARCH.value = tags;
+}
+
+function RemoveFromTags(tagToRemove)
+{
+  let tags = SEARCH.value.split(',');
+  if(tags.includes(tagToRemove))
+  {
+    let iO = tags.indexOf(tagToRemove);
+    tags.splice(iO, 1);
+  }
+  if(tags[0] === '') tags.splice(0, 1);
+  SEARCH.value = tags;
+}
+
 
 function AddToPlaylist(index)
 {

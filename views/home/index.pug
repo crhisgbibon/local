@@ -6,6 +6,7 @@ block content
     button(class='' id='MENU_PLAY') Play
     button(class='' id='MENU_HIDE') Hide
     button(class='' id='MENU_LIST') List
+    button(class='' id='MENU_TAGS') Tags
     input(class='' type='search' id='SEARCH' placeholder='Tags...')
     button(class='' id='MENU_GET') Get
     button(class='' id='MENU_CLEAR') Clear
@@ -33,6 +34,14 @@ block content
     input(class='' id='EDIT_TAGS' name="EDIT_TAGS" type='text' value='')
     input(class='' id='EDIT_SUBMIT' type='submit')
     button(class='' id='EDIT_CLOSE' type='button') Close
+
+  div(class='' id='TAG_LIST')
+    - if(tags)
+      each tag in tags
+        div(class='tagD')
+          button(class='tagB tagRemove' data-tag=tag) -
+          p(class='tagP') #{tag}
+          button(class='tagB tagAdd' data-tag=tag) +
 
   div(class='' id='PLAY_LIST')
 

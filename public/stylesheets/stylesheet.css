@@ -85,7 +85,7 @@ button:active{
 }
 
 #MENU2{
-  background-color: none;
+  background-color: rgba(0,0,0,0);
   width: 100%;
   z-index: 190;
 }
@@ -95,6 +95,18 @@ button:active{
   margin-right: 1px;
   width: 49px;
   height: calc(var(--vh) * 7.5);
+}
+
+#MENU_MIN{
+  background-color: rgba(0,0,0,0);;
+}
+
+#MENU_MIN:active{
+  background-color: rgba(0,0,0,0);;
+}
+
+#MENU_MIN:hover{
+  background-color: rgba(0,0,0,0);;
 }
 
 #MENU_TIMER{
@@ -206,14 +218,15 @@ button:active{
   overflow-y: auto;
 }
 
-#PLAY_LIST, #EDIT_SCREEN{
+#PLAY_LIST, #EDIT_SCREEN, #TAG_LIST{
+  position: absolute;
   z-index: 50;
+  padding-top: calc(var(--vh) * 7.5);
   top: 0;
   left: 0;
   width: 100%;
-  min-height: var(--play_window_height);
-  height: var(--play_window_height);
-  max-height: var(--play_window_height);
+  min-height: calc(var(--vh) * 100);
+  max-height: calc(var(--vh) * 100);
   background-color: var(--back);
   display: flex;
   flex-direction: column;
@@ -297,7 +310,7 @@ button:active{
   text-align: center;
 }
 
-.playlistDiv{
+.playlistDiv, .tagD{
   width: 90%;
   height: 60px;
   display: flex;
@@ -307,7 +320,7 @@ button:active{
   margin-bottom: 4px;
 }
 
-.playlistDiv div{
+.playlistDiv div, .tagP{
   width: 100%;
   height: 60px;
   display: flex;
@@ -315,7 +328,7 @@ button:active{
   justify-content: center;
 }
 
-.playlistDiv button{
+.playlistDiv button, .tagB{
   min-width: 50px;
   height: 100%;
   display: flex;
@@ -338,8 +351,8 @@ button:active{
 }
 
 #PLAY_WINDOW img, #PLAY_WINDOW video{
-  max-width: 100%;
-  min-height: var(--play_window_height);
+  object-fit: cover;
+  max-width: 100vw;
   max-height: var(--play_window_height);
 }
 
