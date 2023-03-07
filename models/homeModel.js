@@ -19,6 +19,7 @@ exports.GetAllUniqueTags = function ()
   for(let i = 0; i < len; i++)
   {
     let t = JSON.parse(rows[i].tags);
+    if(t === null) continue;
     let tLen = t.length;
     for(p = 0; p < tLen; p++)
     {

@@ -235,7 +235,7 @@ function RemoveTag()
     let t = document.getElementById(playlist[i] + 'tag');
     let oldTags = JSON.parse(n.dataset.tags);
     let iO = oldTags.indexOf(tag);
-    if(Number.isInteger(iO))
+    if(oldtags[iO] === tag)
     {
       oldTags.splice(iO, 1);
       let newTags = JSON.stringify(oldTags);
@@ -418,7 +418,8 @@ function ToggleName(name)
   let fileLocation = name.dataset.filelocation;
   let fileType = name.dataset.filetype;
   let displayName = name.dataset.displayname;
-  let tags = JSON.parse(name.dataset.tags);
+  let tags = [];
+  if(name.dataset.tags !== undefined) tags = JSON.parse(name.dataset.tags);
 
   if(playlist.includes(id))
   {
