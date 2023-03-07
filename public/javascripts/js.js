@@ -187,6 +187,7 @@ function AddTag()
   if(len === 0) return;
   let tag = document.getElementById('tagManager').value;
   if(tag === '') return;
+  let send = [];
   for(let i = 0; i < len; i++)
   {
     let n = document.getElementById(playlist[i] + 'name');
@@ -198,28 +199,27 @@ function AddTag()
       let newTags = JSON.stringify(oldTags);
       n.dataset.tags = newTags;
       t.innerHTML = JSON.parse(newTags);
-  
-      $.ajax(
-      {
-        method: "POST",
-        url: "/updatetag",
-        data:
-        {
-          id:playlist[i],
-          newtags:newTags,
-        },
-        success:function(result)
-        {
-
-        },
-        error:function(result)
-        {
-
-        }
-      });
+      send.push(JSON.stringify([playlist[i], newTags]));
     }
   }
-  PopulatePlaylist();
+  send = JSON.stringify(send);
+  $.ajax(
+  {
+    method: "POST",
+    url: "/updatetag",
+    data:
+    {
+      send:send
+    },
+    success:function(result)
+    {
+      PopulatePlaylist();
+    },
+    error:function(result)
+    {
+      PopulatePlaylist();
+    }
+  });
 }
 
 function RemoveTag()
@@ -228,6 +228,7 @@ function RemoveTag()
   if(len === 0) return;
   let tag = document.getElementById('tagManager').value;
   if(tag === '') return;
+  let send = [];
   for(let i = 0; i < len; i++)
   {
     let n = document.getElementById(playlist[i] + 'name');
@@ -240,28 +241,27 @@ function RemoveTag()
       let newTags = JSON.stringify(oldTags);
       n.dataset.tags = newTags;
       t.innerHTML = JSON.parse(newTags);
-
-      $.ajax(
-      {
-        method: "POST",
-        url: "/updatetag",
-        data:
-        {
-          id:playlist[i],
-          newtags:newTags,
-        },
-        success:function(result)
-        {
-
-        },
-        error:function(result)
-        {
-
-        }
-      });
+      send.push(JSON.stringify([playlist[i], newTags]));
     }
   }
-  PopulatePlaylist();
+  send = JSON.stringify(send);
+  $.ajax(
+  {
+    method: "POST",
+    url: "/updatetag",
+    data:
+    {
+      send:send
+    },
+    success:function(result)
+    {
+      PopulatePlaylist();
+    },
+    error:function(result)
+    {
+      PopulatePlaylist();
+    }
+  });
 }
 
 function MinMode()

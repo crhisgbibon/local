@@ -42,15 +42,20 @@ exports.UpdateReferenceName = function (id, newName)
   console.log("changes are " + info.changes); // => 1
 };
 
-exports.UpdateReferenceTags = function (id, newTags)
+exports.UpdateReferenceTags = function (data)
 {
-  console.log("changing row " + id + " tags to " + newTags);
-  const stmt = db.prepare(`
-    UPDATE 'references' 
-    SET tags = ?
-    WHERE id = ?;
-  `);
-  const info = stmt.run(newTags, id);
-
-  console.log("changes are " + info.changes); // => 1
+  let len = data.length;
+  for(let i = 0; i < len; i++)
+  {
+    let id = data[i][0];
+    let newTags = data[i][1];
+    console.log("changing row " + id + " tags to " + newTags);
+    const stmt = db.prepare(`
+      UPDATE 'references' 
+      SET tags = ?
+      WHERE id = ?;
+    `);
+    const info = stmt.run(newTags, id);
+    console.log("changes are " + info.changes); // => 1
+  }
 };

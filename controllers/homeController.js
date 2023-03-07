@@ -34,15 +34,18 @@ exports.edit = function (req, res, next)
 
   model.UpdateReferenceName(id, newName);
   model.UpdateReferenceTags(id, newTags);
+
+  res.redirect('/');
 };
 
 exports.updateTag = function (req, res, next)
 {
-  let id = req.body.id;
-  let newTags = req.body.newtags;
-
-  console.log(id);
-  console.log(newTags);
-
-  model.UpdateReferenceTags(id, newTags);
+  let data = JSON.parse(req.body.send);
+  let len = data.length;
+  for(let i = 0; i < len; i++)
+  {
+    data[i] = JSON.parse(data[i]);
+  }
+  model.UpdateReferenceTags(data);
+  res.send('success');
 };
