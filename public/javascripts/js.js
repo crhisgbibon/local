@@ -235,7 +235,7 @@ function RemoveTag()
     let t = document.getElementById(playlist[i] + 'tag');
     let oldTags = JSON.parse(n.dataset.tags);
     let iO = oldTags.indexOf(tag);
-    if(oldtags[iO] === tag)
+    if(oldTags[iO] === tag)
     {
       oldTags.splice(iO, 1);
       let newTags = JSON.stringify(oldTags);
