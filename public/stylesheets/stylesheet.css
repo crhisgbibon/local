@@ -2,7 +2,7 @@
   --back: rgb(255, 255, 255);
   --mid: rgb(225, 225, 225);
   --front: rgb(100, 100, 100);
-  --highlight: rgb(125, 125, 125);
+  --highlight: rgb(175, 175, 175);
 
   --itemWidth: 400px;
 
@@ -110,7 +110,7 @@ button:active{
 }
 
 #MENU_TIMER{
-  width: 100px;
+  width: 75px;
   text-align: center;
   height: 100%;
   max-height: 50px;
@@ -133,6 +133,11 @@ button:active{
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.menuimg{
+  width: 50%;
+  height: 50%;
 }
 
 .seethrough{
@@ -212,9 +217,11 @@ button:active{
 
 #REFERENCES{
   left: 0;
+  top: 0;
   position: fixed;
-  min-height: calc(var(--vh) * 92.5);
-  max-height: calc(var(--vh) * 92.5);
+  padding-top: calc(var(--vh) * 7.5);
+  min-height: calc(var(--vh) * 100);
+  max-height: calc(var(--vh) * 100);
   overflow-y: auto;
 }
 
@@ -358,8 +365,8 @@ button:active{
 
 #PLAY_WINDOW video{
   object-fit: cover;
-  width: 100%;
-  height: 100%;
+  max-width: 100vw;
+  max-height: var(--play_window_height);
 }
 
 #tagManagerDiv{

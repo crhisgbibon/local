@@ -15,17 +15,20 @@ const MENU_HIDE = document.getElementById('MENU_HIDE');
 const MENU2 = document.getElementById('MENU2');
 const MENU_HIDE2 = document.getElementById('MENU_HIDE2');
 const MENU_PLAY = document.getElementById('MENU_PLAY');
+const MENU_PLAY_IMG = document.getElementById('MENU_PLAY_IMG');
 const MENU_LIST = document.getElementById('MENU_LIST');
 const MENU_TAGS = document.getElementById('MENU_TAGS');
 const SEARCH = document.getElementById('SEARCH');
 const MENU_GET = document.getElementById('MENU_GET');
 const MENU_CLEAR = document.getElementById('MENU_CLEAR');
+const MENU_MODE = document.getElementById('MENU_MODE');
 
 const MENU_MIN = document.getElementById('MENU_MIN');
 const MENU_NEXT = document.getElementById('MENU_NEXT');
 const MENU_LOOP = document.getElementById('MENU_LOOP');
 const MENU_RANDOM = document.getElementById('MENU_RANDOM');
 const MENU_MUTE = document.getElementById('MENU_MUTE');
+const MENU_FULL = document.getElementById('MENU_FULL');
 const MENU_LIST2 = document.getElementById('MENU_LIST2');
 const MENU_TIMER = document.getElementById('MENU_TIMER');
 const MENU_NAME = document.getElementById('MENU_NAME');
@@ -66,14 +69,17 @@ const ADDTAGS_LENGTH = ADDTAGS.length;
 const REMOVETAGS = document.getElementsByClassName('tagRemove');
 const REMOVETAGS_LENGTH = REMOVETAGS.length;
 
+const MENU_BUTTONS = [MENU_LIST, MENU_TAGS];
 const SCREENS = [PLAY_LIST, TAG_LIST];
 
+SEARCH.onkeyup = function() { Filter(); };
 MENU_PLAY.onclick = function() { PlayPause(); };
 MENU_HIDE.onclick = function() { TogglePanel(MENU); ToggleHide(); };
-MENU_LIST.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
-MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, 1); };
-MENU_GET.onclick = function() { GetTags(); };
+MENU_LIST.onclick = function() { SwitchPanel(SCREENS, MENU_BUTTONS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
+MENU_TAGS.onclick = function() { SwitchPanel(SCREENS, MENU_BUTTONS, 1); };
+MENU_GET.onclick = function() { GetSearchValue(); };
 MENU_CLEAR.onclick = function() { ClearTags(); };
+MENU_MODE.onclick = function() { SwitchMode(); };
 
 MENU_MIN.onclick = function() { MinMode(); };
 MENU_HIDE2.onclick = function() { TogglePanel(MENU); ToggleHide(); };
@@ -81,19 +87,22 @@ MENU_NEXT.onclick = function() { PickNext(); };
 MENU_LOOP.onclick = function() { ToggleLoop(); };
 MENU_RANDOM.onclick = function() { ToggleRandom(); };
 MENU_MUTE.onclick = function() { ToggleMute(); };
-MENU_LIST2.onclick = function() { SwitchPanel(SCREENS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
+MENU_FULL.onclick = function() { ToggleFull(); };
+MENU_LIST2.onclick = function() { SwitchPanel(SCREENS, MENU_BUTTONS, 0); if(PLAY_LIST.style.display === '') PopulatePlaylist(); };
 
 
 EDIT_LAST.onclick = function() { EditLast(); };
 EDIT_NEXT.onclick = function() { EditNext(); };
 EDIT_CLOSE.onclick = function() { TogglePanel(EDIT_SCREEN); };
 
+let mode = 'tag';
 let many = 0;
 let index = 0;
 let play = false;
 let loop = false;
 let random = true;
 let mute = false;
+let full = false;
 let last = undefined;
 MENU_RANDOM.style.backgroundColor = 'var(--highlight)';
 
@@ -119,12 +128,62 @@ function TogglePanel(panel)
   else panel.style.display = '';
 }
 
-function SwitchPanel(array, index)
+function SwitchPanel(array, buttons, index)
 {
   for(let i = 0; i < array.length; i++)
   {
-    if(i === index) if(array[i].style.display === '') array[i].style.display = 'none'; else array[i].style.display = '';
-    else array[i].style.display = 'none';
+    if(i === index)
+    {
+      if(array[i].style.display === '')
+      {
+        array[i].style.display = 'none';
+        buttons[i].style.backgroundColor = 'var(--front)';
+      }
+      else
+      {
+        array[i].style.display = '';
+        buttons[i].style.backgroundColor = 'var(--highlight)';
+      }
+    }
+    else
+    {
+      array[i].style.display = 'none';
+      buttons[i].style.backgroundColor = 'var(--front)';
+    }
+  }
+}
+
+function SwitchMode()
+{
+  if(mode === 'tag')
+  {
+    mode = 'filter';
+    SEARCH.placeholder = 'Search...'
+  }
+  else
+  {
+    mode = 'tag';
+    SEARCH.placeholder = 'Tags...'
+  }
+  SEARCH.value = '';
+}
+
+function Filter()
+{
+  if(mode === 'tag') return;
+  let filter, a, i;
+  filter = SEARCH.value.toUpperCase();
+  for(i = 0; i < ITEMS_LENGTH; i++)
+  {
+    a = ITEMS[i].dataset.displayname;
+    if(a.toUpperCase().indexOf(filter) > -1)
+    {
+      ITEMS[i].style.display = '';
+    }
+    else
+    {
+      ITEMS[i].style.display = 'none';
+    }
   }
 }
 
@@ -329,6 +388,13 @@ function ToggleMute()
   }
 }
 
+function ToggleFull()
+{
+  full = !full;
+  if(full) MENU_FULL.style.backgroundColor = 'var(--highlight)';
+  else MENU_FULL.style.backgroundColor = 'var(--front)';
+}
+
 function AssignNames()
 {
   for(let i = 0; i < NAMES_LENGTH; i++)
@@ -495,13 +561,13 @@ function PlayPause()
   play = !play;
   if(play)
   {
-    MENU_PLAY.innerHTML = 'Pause';
     PLAY_WINDOW.style.display = '';
+    MENU_PLAY_IMG.src = './assets/pause.svg';
   }
   else
   {
-    MENU_PLAY.innerHTML = 'Play';
     PLAY_WINDOW.style.display = 'none';
+    MENU_PLAY_IMG.src = './assets/play.svg';
   }
   PickOne();
 }
@@ -606,6 +672,10 @@ function PlayThis(i)
     video.id = 'activevideoplayer';
     video.src = '/videos/' + fileLocation;
     if(mute) video.muted = true;
+    if(full)
+    {
+      // TBD
+    }
     video.play();
     video.addEventListener('ended', PickOne, { once: true });
     PLAY_WINDOW.appendChild(video);
@@ -618,31 +688,42 @@ function PickNext()
   PickOne();
 }
 
-function GetTags()
+function GetSearchValue()
 {
-  playlist.length = 0;
-  let search = SEARCH.value;
-  let tags = search.split(',')
-  let TAGS_LENGTH = tags.length;
-
-  for(let i = 0; i < TAGS_LENGTH; i++)
+  if(mode === 'tag')
   {
-    tags[i] = tags[i].trim();
-    tags[i] = tags[i].toUpperCase();
-  }
-
-  for(let i = 0; i < NAMES_LENGTH; i++)
-  {
-    let json = JSON.parse(NAMES[i].dataset.tags);
-    let JSON_LENGTH = json.length;
-    for(let j = 0; j < JSON_LENGTH; j++)
+    playlist.length = 0;
+    let search = SEARCH.value;
+    let tags = search.split(',')
+    let TAGS_LENGTH = tags.length;
+  
+    for(let i = 0; i < TAGS_LENGTH; i++)
     {
-      json[j] = json[j].trim();
-      json[j] = json[j].toUpperCase();
-      if(tags.includes(json[j]))
+      tags[i] = tags[i].trim();
+      tags[i] = tags[i].toUpperCase();
+    }
+  
+    for(let i = 0; i < NAMES_LENGTH; i++)
+    {
+      if(NAMES[i].dataset.tags === undefined) continue;
+      let json = JSON.parse(NAMES[i].dataset.tags);
+      let JSON_LENGTH = json.length;
+      for(let j = 0; j < JSON_LENGTH; j++)
       {
-        if(!playlist.includes(NAMES[i].dataset.id)) playlist.push(NAMES[i].dataset.id);
+        json[j] = json[j].trim();
+        json[j] = json[j].toUpperCase();
+        if(tags.includes(json[j]))
+        {
+          if(!playlist.includes(NAMES[i].dataset.id)) playlist.push(NAMES[i].dataset.id);
+        }
       }
+    }
+  }
+  else if(mode === 'filter')
+  {
+    for(let i = 0; i < ITEMS_LENGTH; i++)
+    {
+      if(ITEMS[i].style.display === '') playlist.push(ITEMS[i].dataset.id);
     }
   }
 }

@@ -3,22 +3,36 @@ extends ../layout
 block content
 
   div(id='MENU')
-    button(class='' id='MENU_PLAY') Play
-    button(class='' id='MENU_HIDE') Hide
-    button(class='' id='MENU_LIST') List
+    button(class='' id='MENU_PLAY')
+      img(src='./assets/play.svg' class='menuimg' id='MENU_PLAY_IMG')
+    button(class='' id='MENU_HIDE')
+      img(src='./assets/hide.svg' class='menuimg')
+    button(class='' id='MENU_LIST')
+      img(src='./assets/list.svg' class='menuimg')
     button(class='' id='MENU_TAGS') Tags
     input(class='' type='search' id='SEARCH' placeholder='Tags...')
-    button(class='' id='MENU_GET') Get
-    button(class='' id='MENU_CLEAR') Clear
+    button(class='' id='MENU_GET')
+      img(src='./assets/search.svg' class='menuimg')
+    button(class='' id='MENU_MODE') Mode
+    button(class='' id='MENU_CLEAR')
+      img(src='./assets/clear.svg' class='menuimg')
 
   div(id='MENU2')
       button(class='seethrough' id='MENU_MIN') &lt;
-      button(class='tohide' id='MENU_HIDE2') H
-      button(class='tohide' id='MENU_NEXT') N
-      button(class='tohide' id='MENU_LOOP') L
-      button(class='tohide' id='MENU_RANDOM') R
-      button(class='tohide' id='MENU_MUTE') M
-      button(class='tohide' id='MENU_LIST2') Li
+      button(class='tohide' id='MENU_HIDE2')
+        img(src='./assets/hide.svg' class='menuimg')
+      button(class='tohide' id='MENU_NEXT')
+        img(src='./assets/next.svg' class='menuimg')
+      button(class='tohide' id='MENU_LOOP')
+        img(src='./assets/repeat.svg' class='menuimg')
+      button(class='tohide' id='MENU_RANDOM')
+        img(src='./assets/shuffle.svg' class='menuimg')
+      button(class='tohide' id='MENU_MUTE')
+        img(src='./assets/mute.svg' class='menuimg')
+      button(class='tohide' id='MENU_FULL')
+        img(src='./assets/full.svg' class='menuimg')
+      button(class='tohide' id='MENU_LIST2')
+        img(src='./assets/list.svg' class='menuimg')
       input(class='tohide' type='number' id='MENU_TIMER' value=5)
       p(class='tohide' id='MENU_NAME')
 
@@ -52,7 +66,7 @@ block content
     - if(references)
 
       each ref in references
-        div(class='item' id=ref.id+'item')
+        div(class='item' id=ref.id+'item' data-id=ref.id data-displayName=ref.displayName)
           div(class='control')
             div(class='controlT')
               p(class='name' id=ref.id+'name' data-id=ref.id data-fileLocation=ref.fileLocation data-fileType=ref.fileType data-displayName=ref.displayName data-tags=ref.tags) #{ref.displayName}
